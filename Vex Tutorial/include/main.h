@@ -71,9 +71,10 @@ void opcontrol(void);
 #endif
 
 #ifdef __cplusplus
-/**
- * You can add C++-only headers here
- */
+#include "globals.h"
+#include "routes.h"
+#include "functions.h"
+#include "tracking.h"
 //#include <iostream>
 #endif
 

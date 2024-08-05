@@ -24,9 +24,16 @@ void on_center_button() {
  */
 void initialize() {
 	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");
+	controller.clear();
+	
+	// Reset inertial
+	inertial.reset();
 
-	pros::lcd::register_btn1_cb(on_center_button);
+	// This is exactly like holding the brake of a car
+	// Motors hold their position when they stop moving
+	left_dt.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	right_dt.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+
 }
 
 /**
@@ -73,22 +80,45 @@ void autonomous() {}
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
-void opcontrol() {
-	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::MotorGroup left_mg({1, -2, 3});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
-	pros::MotorGroup right_mg({-4, 5, -6});  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
+ void opcontrol() {
+	left_dt.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
+	right_dt.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
 
+	// Set pistons here to false too
 
 	while (true) {
-		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
+		left_dt.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
+		right_dt.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
 
-		// Arcade control scheme
-		int dir = master.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
-		int turn = master.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
-		left_mg.move(dir - turn);                      // Sets left motor voltage
-		right_mg.move(dir + turn);                     // Sets right motor voltage
-		pros::delay(20);                               // Run for 20 ms then update
+		// controller defined in globals
+		// .get_analog() returns the reading [-127, 127] of a controller
+		double left = ((controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)) / 127.0);
+		double right = ((controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)) / 127.0); 
+
+		// Adjust sensitivity as you see fit
+		// left = left * 0.88;
+		// right = right * 0.76;
+
+		// Scaling, makes sure that the powers do not exceed the limit
+		double mag = fmax(1.0, fmax(fabs(left + right), fabs(left - right)));
+		
+		// motor.move_velocity() takes inputs from [-600, 600] for blue motors.
+		// Red is [-100, 100] and green is [-200, 200]
+		// A negative input spins the motor in the opposite direction than set in globals
+		double left_power = ((left + right) / mag) * 600;
+		double right_power = ((left - right) / mag) * 600;
+		
+		left_dt.move_velocity(left_power);
+		right_dt.move_velocity(right_power);
+		
+		if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
+			turn(40);
+		}
+
+		// Delay is in milliseconds
+		// Important because in a while loop, this is being repeated infinitely
+		// We do not want the brain to crash
+		pros::delay(10);
 	}
+
 }
