@@ -111,9 +111,18 @@ void autonomous() {}
 		left_dt.move_velocity(left_power);
 		right_dt.move_velocity(right_power);
 		
-		if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
-			turn(40);
-		}
+		// if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
+		// 	turn(40);
+		// }
+
+		// Example Implementation of Intake
+		// if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
+		// 	intake.move_voltage(12000);
+		// } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){ {
+		// 	intake.move_voltage(-12000);
+		// } else {
+		// 	intake.move_voltage(0);
+		// }
 
 		// Delay is in milliseconds
 		// Important because in a while loop, this is being repeated infinitely

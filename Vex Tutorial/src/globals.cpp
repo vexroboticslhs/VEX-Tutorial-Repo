@@ -23,13 +23,13 @@ Defining a motor:
 		Usually use degrees or rotations. This tutorial will use rotations.
 */
 // Please note that these are subject to change depending on the robot's configuration.
-Motor fl(-15, v5::MotorGears::blue, v5::MotorUnits::rotations);
-Motor ml(-16, v5::MotorGears::blue, v5::MotorUnits::rotations);
-Motor bl(-19, v5::MotorGears::blue, v5::MotorUnits::rotations);
+Motor fl(-11, v5::MotorGears::blue, v5::MotorUnits::rotations);
+Motor ml(-12, v5::MotorGears::blue, v5::MotorUnits::rotations);
+Motor bl(-13, v5::MotorGears::blue, v5::MotorUnits::rotations);
 
-Motor fr(11, v5::MotorGears::blue, v5::MotorUnits::rotations);
-Motor mr(12, v5::MotorGears::blue, v5::MotorUnits::rotations);
-Motor br(13, v5::MotorGears::blue, v5::MotorUnits::rotations);
+Motor fr(1, v5::MotorGears::blue, v5::MotorUnits::rotations);
+Motor mr(2, v5::MotorGears::blue, v5::MotorUnits::rotations);
+Motor br(3, v5::MotorGears::blue, v5::MotorUnits::rotations);
 
 // Motor intake(7, v5::MotorGears::green, v5::MotorUnits::rotations);
 
@@ -40,7 +40,7 @@ MotorGroup left_dt({fl.get_port(), ml.get_port(), bl.get_port()}, v5::MotorGears
 MotorGroup right_dt({fr.get_port(), mr.get_port(), br.get_port()}, v5::MotorGears::blue, v5::MotorUnits::rotations);
 
 // Inertial
-IMU inertial(7);
+IMU inertial(21);
 
 // Rotation Sensors
 // Rotation left_rot(9); 
