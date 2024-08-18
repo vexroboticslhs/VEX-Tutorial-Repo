@@ -1,1 +1,1 @@
-Assosciated PROS project with [code.lhsvex.org](code.lhsvex.org)
+Assosciated PROS project with [this tutorial](code.lhsvex.org)
